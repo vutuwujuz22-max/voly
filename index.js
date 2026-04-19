@@ -53,23 +53,22 @@ const CONFIG = {
         await new Promise(r => setTimeout(r, 3000));
         
         // =========================================================
-        // التعديل: استهداف أيقونة التحميل البنفسجية في صف العميل
+        // التعديل الجديد: استهداف أيقونة التحميل الموف بدقة
         // =========================================================
-        console.log('جاري محاولة اختيار العميل من القائمة...');
+        console.log('جاري محاولة اختيار العميل بالضغط على أيقونة التحميل الموف...');
         const clientSelected = await page.evaluate(() => {
-            // البحث عن كل الروابط التي تحتوي على أيقونة التحميل
-            const links = Array.from(document.querySelectorAll('a[id*="LnkSetClient"]'));
-            // اختيار أول رابط مرئي (بعد الفلترة بالبحث)
-            for (let link of links) {
-                // التأكد من أن العنصر و/أو الأيقونة مرئية
-                if (link.offsetParent !== null) {
-                    link.click();
+            // البحث عن الأيقونة (fa-download) تحديداً داخل روابط العملاء
+            const icons = Array.from(document.querySelectorAll('a[id*="LnkSetClient"] i.fa-download'));
+            for (let icon of icons) {
+                // التأكد من أن الأيقونة أو الرابط الخاص بها مرئي على الشاشة
+                if (icon.offsetParent !== null || icon.closest('a').offsetParent !== null) {
+                    icon.closest('a').click(); // الضغط على الرابط الذي يحتوي على الأيقونة
                     return true;
                 }
             }
             return false;
         });
-        console.log(clientSelected ? '✅ تم الضغط على أيقونة العميل.' : '❌ عطل: لم يتم العثور على أيقونة العميل المرئية!');
+        console.log(clientSelected ? '✅ تم الضغط على أيقونة العميل بنجاح.' : '❌ عطل: لم يتم العثور على أيقونة العميل المرئية!');
         await new Promise(r => setTimeout(r, 2000));
 
         console.log('3. إدخال التواريخ (من الشهر الماضي لليوم)...');
